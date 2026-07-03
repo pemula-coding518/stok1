@@ -3,83 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Stok</title>
-    <meta name="description" content="Aplikasi manajemen stok barang">
+    <title>Manajemen Stok — Inventori</title>
+    <meta name="description" content="Aplikasi manajemen stok barang dengan dashboard">
     <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="app-container">
-        <header class="header">
-            <h1>Inventori</h1>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Cari nama barang..." aria-label="Cari barang">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div id="emptyState" class="empty-state hidden">
-                <div class="empty-icon">📦</div>
-                <p>Belum ada barang.</p>
-                <p class="empty-sub">Ketuk tombol + untuk menambah.</p>
-            </div>
-            
-            <div id="itemList" class="item-list">
-                <!-- Items will be injected here -->
-            </div>
-        </main>
-
-        <button id="addBtn" class="fab" aria-label="Tambah Barang">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        </button>
+    <!-- ═══ Marquee Ticker ═══ -->
+    <div class="ticker-bar">
+        <div class="ticker-track" id="tickerTrack">
+            <span class="ticker-placeholder">⏳ Memuat data inventori...</span>
+        </div>
     </div>
 
-    <!-- Modal for Add/Edit -->
-    <div id="itemModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Tambah Barang</h2>
-                <button id="closeModalBtn" class="close-btn" aria-label="Tutup">&times;</button>
-            </div>
-            <form id="itemForm">
-                <input type="hidden" id="itemId">
-                
-                <div class="form-group">
-                    <label for="itemName">Nama Barang</label>
-                    <input type="text" id="itemName" required placeholder="Contoh: Kopi Bubuk">
-                </div>
-                
-                <div class="form-group">
-                    <label for="itemCategory">Kategori</label>
-                    <input type="text" id="itemCategory" required placeholder="Contoh: Minuman">
-                </div>
-                
-                <div class="form-group">
-                    <label for="itemStock">Stok</label>
-                    <input type="number" id="itemStock" required min="0" placeholder="0">
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="itemBuyPrice">Harga Beli</label>
-                        <input type="number" id="itemBuyPrice" required min="0" placeholder="Rp 0">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="itemSellPrice">Harga Jual</label>
-                        <input type="number" id="itemSellPrice" required min="0" placeholder="Rp 0">
-                    </div>
+    <div class="app-layout">
+        <!-- ═══ Sidebar ═══ -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-inner">
+                <div class="sidebar-header">
+                    <h1 class="logo">📦 Inventori</h1>
+                    <button id="closeSidebarBtn" class="sidebar-close-btn" aria-label="Tutup Sidebar">&times;</button>
                 </div>
 
-                <div class="modal-actions">
-                    <button type="button" id="cancelBtn" class="btn btn-secondary">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                <!-- Form Section -->
+                <div class="sidebar-section">
+                    <h2 id="sidebarFormTitle" class="section-title">
+                        <span class="section-icon">＋</span> Tambah Barang
+                    </h2>
+                    <form id="itemForm">
+                        <input type="hidden" id="itemId">
+                        <div class="form-group">
+                            <label for="itemName">Nama Barang</label>
+                            <input type="text" id="itemName" required placeholder="Contoh: Kopi Bubuk">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemCategory">Kategori</label>
+                            <input type="text" id="itemCategory" required placeholder="Contoh: Minuman">
+                        </div>
+                        <div class="form-group">
+                            <label for="itemStock">Stok</label>
+                            <input type="number" id="itemStock" required min="0" placeholder="0">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="itemBuyPrice">Harga Beli</label>
+                                <input type="number" id="itemBuyPrice" required min="0" placeholder="Rp 0">
+                            </div>
+                            <div class="form-group">
+                                <label for="itemSellPrice">Harga Jual</label>
+                                <input type="number" id="itemSellPrice" required min="0" placeholder="Rp 0">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-block">Simpan</button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-secondary btn-block hidden">Batal Edit</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar overlay for mobile -->
+        <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>
+
+        <!-- ═══ Main Content ═══ -->
+        <main class="main-area">
+            <!-- Top Bar -->
+            <div class="topbar">
+                <button id="menuBtn" class="btn-icon menu-btn" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchInput" placeholder="Cari nama barang..." aria-label="Cari barang">
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <section class="dashboard">
+                <div class="dash-card dash-total">
+                    <div class="dash-label">Total Barang</div>
+                    <div class="dash-value" id="dashTotal">0</div>
+                    <div class="dash-icon">📋</div>
+                </div>
+                <div class="dash-card dash-stock">
+                    <div class="dash-label">Total Stok</div>
+                    <div class="dash-value" id="dashStock">0</div>
+                    <div class="dash-icon">🏷️</div>
+                </div>
+                <div class="dash-card dash-modal-value">
+                    <div class="dash-label">Nilai Modal</div>
+                    <div class="dash-value" id="dashCapital">Rp 0</div>
+                    <div class="dash-icon">💰</div>
+                </div>
+                <div class="dash-card dash-profit">
+                    <div class="dash-label">Potensi Laba</div>
+                    <div class="dash-value" id="dashProfit">Rp 0</div>
+                    <div class="dash-icon">📈</div>
+                </div>
+            </section>
+
+            <!-- Item Table / List -->
+            <section class="content-section">
+                <div class="section-bar">
+                    <h2 class="section-title"><span class="section-icon">⚡</span> Daftar Barang</h2>
+                    <button id="addBtnMobile" class="btn btn-primary btn-sm add-mobile-btn">
+                        <span>＋</span> Tambah
+                    </button>
+                </div>
+
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-icon">📦</div>
+                    <p>Belum ada barang.</p>
+                    <p class="empty-sub">Gunakan form di sidebar untuk menambahkan barang baru.</p>
+                </div>
+
+                <div class="table-wrapper" id="tableWrapper">
+                    <table class="item-table" id="itemTable">
+                        <thead>
+                            <tr>
+                                <th>Barang</th>
+                                <th class="num">Stok</th>
+                                <th class="num">Harga Beli</th>
+                                <th class="num">Harga Jual</th>
+                                <th class="num">Laba/Unit</th>
+                                <th class="act">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card View -->
+                <div id="itemList" class="item-list">
+                </div>
+            </section>
+        </main>
     </div>
 
     <!-- Delete Confirmation Modal -->
