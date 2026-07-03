@@ -3,7 +3,9 @@
 // Initialize Supabase
 const supabaseUrl = 'https://tvfmtjwslsmfevwxbozr.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2Zm10andzbHNtZmV2d3hib3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwODM0MjEsImV4cCI6MjA5ODY1OTQyMX0.6Cq514dox_nYnfWrHBbi7MiDJoljig0UJlCn_yK8wkI';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// Gunakan nama 'supabaseClient' agar tidak bentrok dengan global 'supabase' dari CDN
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 // State management
 let items = [];
@@ -53,7 +55,7 @@ const fetchItems = async () => {
     renderItems(); // Show loading state
     
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('inventory_items')
             .select('*')
             .order('created_at', { ascending: false });
@@ -207,7 +209,7 @@ confirmDeleteBtn.addEventListener('click', async () => {
             confirmDeleteBtn.textContent = 'Menghapus...';
             confirmDeleteBtn.disabled = true;
             
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('inventory_items')
                 .delete()
                 .eq('id', itemToDeleteId);
@@ -255,7 +257,7 @@ itemForm.addEventListener('submit', async (e) => {
     try {
         if (currentEditId) {
             // Update
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('inventory_items')
                 .update(itemData)
                 .eq('id', currentEditId);
@@ -263,7 +265,7 @@ itemForm.addEventListener('submit', async (e) => {
             if (error) throw error;
         } else {
             // Create
-            const { error } = await supabase
+            const { error } = await supabaseClient
                 .from('inventory_items')
                 .insert([itemData]);
                 
