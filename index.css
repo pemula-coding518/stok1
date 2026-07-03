@@ -480,3 +480,7 @@ input:focus {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-muted);
 }
+
+.hidden {
+    display: none !important;
+}
