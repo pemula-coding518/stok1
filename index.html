@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Stok</title>
+    <meta name="description" content="Aplikasi manajemen stok barang">
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>Inventori</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Cari nama barang..." aria-label="Cari barang">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-icon">📦</div>
+                <p>Belum ada barang.</p>
+                <p class="empty-sub">Ketuk tombol + untuk menambah.</p>
+            </div>
+            
+            <div id="itemList" class="item-list">
+                <!-- Items will be injected here -->
+            </div>
+        </main>
+
+        <button id="addBtn" class="fab" aria-label="Tambah Barang">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="itemModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Tambah Barang</h2>
+                <button id="closeModalBtn" class="close-btn" aria-label="Tutup">&times;</button>
+            </div>
+            <form id="itemForm">
+                <input type="hidden" id="itemId">
+                
+                <div class="form-group">
+                    <label for="itemName">Nama Barang</label>
+                    <input type="text" id="itemName" required placeholder="Contoh: Kopi Bubuk">
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemCategory">Kategori</label>
+                    <input type="text" id="itemCategory" required placeholder="Contoh: Minuman">
+                </div>
+                
+                <div class="form-group">
+                    <label for="itemStock">Stok</label>
+                    <input type="number" id="itemStock" required min="0" placeholder="0">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemBuyPrice">Harga Beli</label>
+                        <input type="number" id="itemBuyPrice" required min="0" placeholder="Rp 0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemSellPrice">Harga Jual</label>
+                        <input type="number" id="itemSellPrice" required min="0" placeholder="Rp 0">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal-content delete-modal">
+            <h2>Hapus Barang?</h2>
+            <p>Apakah Anda yakin ingin menghapus <span id="deleteItemName" class="highlight"></span>?</p>
+            <p class="warning-text">Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="modal-actions">
+                <button id="cancelDeleteBtn" class="btn btn-secondary">Batal</button>
+                <button id="confirmDeleteBtn" class="btn btn-danger">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>
