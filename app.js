@@ -192,7 +192,7 @@ const renderAll = (itemsToRender) => {
     } else {
         emptyState.classList.add('hidden');
         tableWrapper.classList.remove('hidden');
-        // Note: item-list is shown via media query on mobile, we just populate it
+        itemList.classList.remove('hidden');
         
         itemsToRender.forEach(item => {
             const isLowStock = parseInt(item.stock) <= 5;
