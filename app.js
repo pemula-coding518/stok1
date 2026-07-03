@@ -63,6 +63,11 @@ const fetchItems = async () => {
         if (error) throw error;
         
         items = data;
+    } catch (error) {
+        console.error('Error fetching items:', error.message);
+        alert('Gagal mengambil data dari server.');
+    } finally {
+        isLoading = false;
         
         // Apply search filter if active
         const searchTerm = searchInput.value.toLowerCase();
@@ -74,11 +79,6 @@ const fetchItems = async () => {
         } else {
             renderItems(items);
         }
-    } catch (error) {
-        console.error('Error fetching items:', error.message);
-        alert('Gagal mengambil data dari server.');
-    } finally {
-        isLoading = false;
     }
 };
 
